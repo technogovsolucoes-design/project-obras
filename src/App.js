@@ -127,9 +127,23 @@ const Btn = ({children,onClick,variant="primary",size="md",disabled=false,full=f
   return <button onClick={onClick} disabled={disabled} style={{padding:size==="sm"?"5px 12px":"7px 16px",borderRadius:8,background:s.bg,color:s.color,border:s.border,cursor:disabled?"not-allowed":"pointer",fontSize:13,fontWeight:500,opacity:disabled?0.5:1,whiteSpace:"nowrap",width:full?"100%":"auto"}}>{children}</button>;
 };
 
+// ─── LOGO TECHNOGOV ───────────────────────────────────────────────────────────
+const LogoTG = ({size=48}) => (
+  <svg width={size} height={size} viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="95" stroke="url(#lg1)" strokeWidth="8" fill="none"/>
+    <path d="M100 20 L160 55 L160 145 L100 180 L40 145 L40 55 Z" fill="none" stroke="url(#lg2)" strokeWidth="5"/>
+    <text x="100" y="125" textAnchor="middle" fontFamily="Arial" fontWeight="900" fontSize="80" fill="url(#lg3)">T</text>
+    <defs>
+      <linearGradient id="lg1" x1="0" y1="0" x2="200" y2="200"><stop stopColor="#1a6b3c"/><stop offset="1" stopColor="#2196a0"/></linearGradient>
+      <linearGradient id="lg2" x1="0" y1="0" x2="200" y2="200"><stop stopColor="#c9a84c"/><stop offset="1" stopColor="#f0d060"/></linearGradient>
+      <linearGradient id="lg3" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#1a6b3c"/><stop offset="1" stopColor="#2a9d5c"/></linearGradient>
+    </defs>
+  </svg>
+);
+
 // ─── TELA DE LOGIN ─────────────────────────────────────────────────────────────
 const LoginScreen = () => {
-  const [mode,setMode]       = useState("login"); // login | register | reset
+  const [mode,setMode]       = useState("login");
   const [email,setEmail]     = useState("");
   const [pass,setPass]       = useState("");
   const [name,setName]       = useState("");
@@ -155,7 +169,6 @@ const LoginScreen = () => {
     catch(e){ setError(errMap[e.code]||"Erro ao entrar."); }
     finally { setLoading(false); }
   };
-
   const handleRegister = async () => {
     if(!email||!pass||!name){setError("Preencha nome, e-mail e senha.");return;}
     setLoading(true);setError("");
@@ -165,7 +178,6 @@ const LoginScreen = () => {
     } catch(e){ setError(errMap[e.code]||"Erro ao cadastrar."); }
     finally { setLoading(false); }
   };
-
   const handleReset = async () => {
     if(!email){setError("Informe o e-mail.");return;}
     setLoading(true);setError("");
@@ -175,58 +187,61 @@ const LoginScreen = () => {
   };
 
   return (
-    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
-      <div style={{background:"#fff",borderRadius:16,padding:"36px 32px",width:"100%",maxWidth:400,boxShadow:"0 20px 60px rgba(0,0,0,.3)"}}>
-        <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:28}}>
-          <div style={{width:36,height:36,background:"#185FA5",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,color:"white",fontWeight:700}}>G</div>
-          <div><p style={{margin:0,fontSize:18,fontWeight:600,color:"#0f172a"}}>GovWorks</p><p style={{margin:0,fontSize:11,color:"#94a3b8"}}>Gestão de Obras Públicas</p></div>
-        </div>
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0a2010 0%,#0f3320 40%,#1a5c3a 100%)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,position:"relative",overflow:"hidden"}}>
+      {/* Decoração de fundo */}
+      <div style={{position:"absolute",top:-80,right:-80,width:320,height:320,borderRadius:"50%",background:"rgba(201,168,76,.08)",pointerEvents:"none"}}/>
+      <div style={{position:"absolute",bottom:-60,left:-60,width:240,height:240,borderRadius:"50%",background:"rgba(201,168,76,.06)",pointerEvents:"none"}}/>
 
-        <p style={{fontSize:16,fontWeight:500,color:"#0f172a",margin:"0 0 20px"}}>
-          {mode==="login"?"Entrar na conta":mode==="register"?"Criar conta":"Redefinir senha"}
-        </p>
-
-        {error&&<div style={{background:"#FCEBEB",border:"1px solid #F09595",borderRadius:8,padding:"8px 12px",fontSize:13,color:"#A32D2D",marginBottom:12}}>{error}</div>}
-        {info&&<div style={{background:"#eaf3de",border:"1px solid #97C459",borderRadius:8,padding:"8px 12px",fontSize:13,color:"#3B6D11",marginBottom:12}}>{info}</div>}
-
-        {mode==="register"&&(
-          <>
-            <div style={{marginBottom:12}}>
-              <label style={{fontSize:12,color:"#64748b",display:"block",marginBottom:3}}>Nome completo *</label>
-              <input value={name} onChange={e=>setName(e.target.value)} placeholder="Seu nome" style={IS}/>
-            </div>
-            <div style={{marginBottom:12}}>
-              <label style={{fontSize:12,color:"#64748b",display:"block",marginBottom:3}}>Organização / Prefeitura</label>
-              <input value={org} onChange={e=>setOrg(e.target.value)} placeholder="Ex: Prefeitura de São Paulo" style={IS}/>
-            </div>
-          </>
-        )}
-
-        <div style={{marginBottom:12}}>
-          <label style={{fontSize:12,color:"#64748b",display:"block",marginBottom:3}}>E-mail *</label>
-          <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="seu@email.com" style={IS} onKeyDown={e=>e.key==="Enter"&&mode==="login"&&handleLogin()}/>
-        </div>
-
-        {mode!=="reset"&&(
-          <div style={{marginBottom:20}}>
-            <label style={{fontSize:12,color:"#64748b",display:"block",marginBottom:3}}>Senha *</label>
-            <input type="password" value={pass} onChange={e=>setPass(e.target.value)} placeholder="••••••••" style={IS} onKeyDown={e=>e.key==="Enter"&&mode==="login"&&handleLogin()}/>
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center",width:"100%",maxWidth:440}}>
+        {/* Header com logo */}
+        <div style={{textAlign:"center",marginBottom:32}}>
+          <LogoTG size={72}/>
+          <p style={{margin:"10px 0 2px",fontSize:28,fontWeight:800,color:"white",letterSpacing:"-0.5px"}}>
+            Go<span style={{color:"#c9a84c"}}>Works</span> Manager
+          </p>
+          <p style={{margin:0,fontSize:13,color:"rgba(255,255,255,.5)"}}>TechnoGov Soluções • Gestão de Obras Públicas</p>
+          <div style={{display:"flex",justifyContent:"center",gap:16,marginTop:14}}>
+            {["Lei 14.133/2021","ETP + Licitação","Execução + Medições"].map(t=>(
+              <span key={t} style={{fontSize:10,color:"#c9a84c",background:"rgba(201,168,76,.1)",border:"1px solid rgba(201,168,76,.2)",padding:"2px 8px",borderRadius:99}}>{t}</span>
+            ))}
           </div>
-        )}
-
-        {mode==="login"&&<Btn full onClick={handleLogin} disabled={loading}>{loading?"Entrando...":"Entrar"}</Btn>}
-        {mode==="register"&&<Btn full onClick={handleRegister} disabled={loading}>{loading?"Cadastrando...":"Criar conta"}</Btn>}
-        {mode==="reset"&&<Btn full onClick={handleReset} disabled={loading}>{loading?"Enviando...":"Enviar link"}</Btn>}
-
-        <div style={{marginTop:16,display:"flex",flexDirection:"column",gap:8,alignItems:"center"}}>
-          {mode==="login"&&(<>
-            <button onClick={()=>{setMode("register");setError("");}} style={{background:"none",border:"none",cursor:"pointer",fontSize:13,color:"#185FA5"}}>Não tem conta? Cadastre-se</button>
-            <button onClick={()=>{setMode("reset");setError("");}} style={{background:"none",border:"none",cursor:"pointer",fontSize:12,color:"#94a3b8"}}>Esqueceu a senha?</button>
-          </>)}
-          {mode!=="login"&&(
-            <button onClick={()=>{setMode("login");setError("");setInfo("");}} style={{background:"none",border:"none",cursor:"pointer",fontSize:13,color:"#185FA5"}}>← Voltar ao login</button>
-          )}
         </div>
+
+        {/* Card de login */}
+        <div style={{background:"rgba(255,255,255,.96)",borderRadius:16,padding:"32px 28px",width:"100%",boxShadow:"0 24px 64px rgba(0,0,0,.4)",backdropFilter:"blur(10px)"}}>
+          <p style={{fontSize:16,fontWeight:600,color:"#0f172a",margin:"0 0 20px",borderBottom:"2px solid #c9a84c",paddingBottom:10}}>
+            {mode==="login"?"Entrar na conta":mode==="register"?"Criar conta":"Redefinir senha"}
+          </p>
+
+          {error&&<div style={{background:"#FCEBEB",border:"1px solid #F09595",borderRadius:8,padding:"8px 12px",fontSize:13,color:"#A32D2D",marginBottom:12}}>{error}</div>}
+          {info&&<div style={{background:"#eaf3de",border:"1px solid #97C459",borderRadius:8,padding:"8px 12px",fontSize:13,color:"#3B6D11",marginBottom:12}}>{info}</div>}
+
+          {mode==="register"&&(<>
+            <div style={{marginBottom:12}}><label style={{fontSize:12,color:"#64748b",display:"block",marginBottom:3}}>Nome completo *</label><input value={name} onChange={e=>setName(e.target.value)} placeholder="Seu nome completo" style={IS}/></div>
+            <div style={{marginBottom:12}}><label style={{fontSize:12,color:"#64748b",display:"block",marginBottom:3}}>Organização / Prefeitura</label><input value={org} onChange={e=>setOrg(e.target.value)} placeholder="Ex: Prefeitura Municipal de..." style={IS}/></div>
+          </>)}
+
+          <div style={{marginBottom:12}}><label style={{fontSize:12,color:"#64748b",display:"block",marginBottom:3}}>E-mail *</label>
+            <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="seu@email.com.br" style={IS} onKeyDown={e=>e.key==="Enter"&&mode==="login"&&handleLogin()}/></div>
+
+          {mode!=="reset"&&(<div style={{marginBottom:20}}><label style={{fontSize:12,color:"#64748b",display:"block",marginBottom:3}}>Senha *</label>
+            <input type="password" value={pass} onChange={e=>setPass(e.target.value)} placeholder="••••••••" style={IS} onKeyDown={e=>e.key==="Enter"&&mode==="login"&&handleLogin()}/></div>)}
+
+          <button onClick={mode==="login"?handleLogin:mode==="register"?handleRegister:handleReset} disabled={loading}
+            style={{width:"100%",padding:"10px",borderRadius:8,background:"linear-gradient(135deg,#1a6b3c,#2a9d5c)",color:"white",border:"none",cursor:loading?"not-allowed":"pointer",fontSize:14,fontWeight:600,opacity:loading?0.7:1,boxShadow:"0 4px 12px rgba(26,107,60,.3)"}}>
+            {loading?"Aguarde...":{login:"Entrar",register:"Criar conta",reset:"Enviar link de redefinição"}[mode]}
+          </button>
+
+          <div style={{marginTop:14,display:"flex",flexDirection:"column",gap:6,alignItems:"center"}}>
+            {mode==="login"&&(<>
+              <button onClick={()=>{setMode("register");setError("");}} style={{background:"none",border:"none",cursor:"pointer",fontSize:13,color:"#1a6b3c",fontWeight:500}}>Não tem conta? Cadastre-se gratuitamente</button>
+              <button onClick={()=>{setMode("reset");setError("");}} style={{background:"none",border:"none",cursor:"pointer",fontSize:12,color:"#94a3b8"}}>Esqueceu a senha?</button>
+            </>)}
+            {mode!=="login"&&<button onClick={()=>{setMode("login");setError("");setInfo("");}} style={{background:"none",border:"none",cursor:"pointer",fontSize:13,color:"#1a6b3c",fontWeight:500}}>← Voltar ao login</button>}
+          </div>
+        </div>
+
+        <p style={{margin:"20px 0 0",fontSize:11,color:"rgba(255,255,255,.3)",textAlign:"center"}}>© 2025 TechnoGov Soluções • Todos os direitos reservados</p>
       </div>
     </div>
   );
@@ -1113,8 +1128,65 @@ const ModExecucao=({data,setData})=>{
 };
 
 // ─── PROCESSO FORM ────────────────────────────────────────────────────────────
-const PTABS=[{id:"etp",l:"1. ETP"},{id:"geral",l:"2. Geral"},{id:"eng",l:"3. Engenharia"},{id:"lic",l:"4. Licitação"},{id:"ct",l:"5. Contratos"},{id:"exec",l:"6. Execução"}];
+const PTABS=[{id:"identificacao",l:"0. Identificação"},{id:"etp",l:"1. ETP"},{id:"geral",l:"2. Geral"},{id:"eng",l:"3. Engenharia"},{id:"lic",l:"4. Licitação"},{id:"ct",l:"5. Contratos"},{id:"exec",l:"6. Execução"}];
 const EMPTY={status:"Planejamento (ETP)",nome:"",objeto_resumido:"",orcamento_estimado:"",convenio:{tem:"nao"},etp:{simplificado:"nao",base_custos:"",estimativa_valor:""},engenharia:{art_rrt:"",prazo_execucao_dias:"",data_base_orcamento:""},licitacao:{numero_processo:"",modalidade:"",numero_edital:"",data_abertura:"",regime:""},contrato:{empresa:"",cnpj:"",numero:"",data_assinatura:"",valor_inicial:0,aditivos:[]},execucao:{etapas:[],medicoes:[],diario:[]}};
+
+const ModIdentificacao = ({data,update,setData}) => {
+  const [novaEtapa,setNovaEtapa] = useState({nome:"",peso:0,inicio_plan:"",fim_plan:""});
+  const etapas = data.execucao?.etapas||[];
+  const addEtapa = () => {
+    if(!novaEtapa.nome.trim())return;
+    const nova = {...novaEtapa,id:Date.now(),peso:Number(novaEtapa.peso)||0,status:"nao_iniciada",inicio_real:null,fim_real:null};
+    setData(p=>({...p,execucao:{...p.execucao,etapas:[...(p.execucao?.etapas||[]),nova]}}));
+    setNovaEtapa({nome:"",peso:0,inicio_plan:"",fim_plan:""});
+  };
+  const delEtapa = id => setData(p=>({...p,execucao:{...p.execucao,etapas:p.execucao.etapas.filter(e=>e.id!==id)}}));
+  const totalPeso = etapas.reduce((a,e)=>a+Number(e.peso||0),0);
+
+  return(<div style={{display:"flex",flexDirection:"column",gap:16}}>
+    {/* Nome em destaque */}
+    <div style={{background:"linear-gradient(135deg,#0a2010,#0f3320)",borderRadius:12,padding:"20px 24px",border:"1px solid rgba(201,168,76,.2)"}}>
+      <p style={{fontSize:11,color:"rgba(255,255,255,.5)",margin:"0 0 6px",textTransform:"uppercase",letterSpacing:"1px"}}>Nome da Obra / Projeto *</p>
+      <input value={data.nome||""} onChange={e=>update(null,"nome",e.target.value)} placeholder="Ex: Construção do Centro Cívico Municipal"
+        style={{width:"100%",background:"rgba(255,255,255,.08)",border:"1px solid rgba(201,168,76,.3)",borderRadius:8,padding:"10px 14px",fontSize:18,fontWeight:600,color:"white",boxSizing:"border-box",outline:"none"}}/>
+      <p style={{fontSize:11,color:"rgba(201,168,76,.7)",margin:"6px 0 0"}}>💡 {DICAS.nome}</p>
+    </div>
+
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+      <Sel label="Status Atual" value={data.status} onChange={v=>update(null,"status",v)} options={STATUS_LIST} tip="Atualize conforme o andamento do processo."/>
+      <Inp label="Orçamento Estimado (R$)" type="number" value={data.orcamento_estimado} onChange={v=>update(null,"orcamento_estimado",v)} prefix="R$" tip="Preencha após concluir o ETP e projeto básico."/>
+    </div>
+    <Txt label="Objeto / Descrição resumida" value={data.objeto_resumido} onChange={v=>update(null,"objeto_resumido",v)} rows={2} tip={DICAS.objeto_resumido}/>
+
+    {/* Cadastro de etapas integrado */}
+    <Card>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+        <div>
+          <p style={{fontSize:13,fontWeight:600,margin:0}}>Etapas da Obra</p>
+          <p style={{fontSize:11,color:"#94a3b8",margin:"2px 0 0"}}>Cadastre aqui para usar no cronograma físico-financeiro. Peso total: <strong style={{color:totalPeso===100?"#1a6b3c":totalPeso>100?"#A32D2D":"#854F0B"}}>{totalPeso}%</strong></p>
+        </div>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"3fr 1fr 1fr 1fr auto",gap:8,marginBottom:10,alignItems:"end"}}>
+        <div><label style={{fontSize:11,color:"#64748b",display:"block",marginBottom:3}}>Nome da etapa *</label><input value={novaEtapa.nome} onChange={e=>setNovaEtapa(p=>({...p,nome:e.target.value}))} placeholder="Ex: Fundações" style={{...IS,fontSize:12}}/></div>
+        <div><label style={{fontSize:11,color:"#64748b",display:"block",marginBottom:3}}>Peso %</label><input type="number" value={novaEtapa.peso} onChange={e=>setNovaEtapa(p=>({...p,peso:e.target.value}))} style={{...IS,fontSize:12}}/></div>
+        <div><label style={{fontSize:11,color:"#64748b",display:"block",marginBottom:3}}>Início plan.</label><input type="date" value={novaEtapa.inicio_plan} onChange={e=>setNovaEtapa(p=>({...p,inicio_plan:e.target.value}))} style={{...IS,fontSize:12}}/></div>
+        <div><label style={{fontSize:11,color:"#64748b",display:"block",marginBottom:3}}>Fim plan.</label><input type="date" value={novaEtapa.fim_plan} onChange={e=>setNovaEtapa(p=>({...p,fim_plan:e.target.value}))} style={{...IS,fontSize:12}}/></div>
+        <button onClick={addEtapa} style={{padding:"7px 14px",borderRadius:8,background:"linear-gradient(135deg,#1a6b3c,#2a9d5c)",color:"white",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,marginTop:18,whiteSpace:"nowrap"}}>+ Adicionar</button>
+      </div>
+      {etapas.length===0?<p style={{fontSize:12,color:"#94a3b8",margin:0,textAlign:"center",padding:"12px 0"}}>Nenhuma etapa cadastrada ainda.</p>
+      :<div style={{display:"flex",flexDirection:"column",gap:6}}>
+        {etapas.map((e,i)=>(
+          <div key={e.id} style={{display:"grid",gridTemplateColumns:"3fr 1fr 1fr 1fr auto",gap:8,alignItems:"center",padding:"8px 10px",background:"#f8fafc",borderRadius:8,border:"1px solid #e2e8f0"}}>
+            <span style={{fontSize:13,fontWeight:500,color:"#0f172a"}}>{i+1}. {e.nome}</span>
+            <span style={{fontSize:12,color:"#64748b",textAlign:"center"}}>{e.peso}%</span>
+            <span style={{fontSize:11,color:"#94a3b8"}}>{fmtDate(e.inicio_plan)}</span>
+            <span style={{fontSize:11,color:"#94a3b8"}}>{fmtDate(e.fim_plan)}</span>
+            <button onClick={()=>delEtapa(e.id)} style={{background:"none",border:"none",cursor:"pointer",color:"#A32D2D",fontSize:14,padding:"2px 6px"}}>✕</button>
+          </div>))}
+      </div>}
+    </Card>
+  </div>);
+};
 
 const ProcessoForm=({obra,onSave,onBack,onDelete,saving})=>{
   const [data,setData]=useState(obra?{...EMPTY,...obra,execucao:{etapas:[],medicoes:[],diario:[],...(obra.execucao||{})}}:{...EMPTY});
@@ -1136,6 +1208,7 @@ const ProcessoForm=({obra,onSave,onBack,onDelete,saving})=>{
     </div>
     <div style={{flex:1,overflowY:"auto",padding:"20px"}}>
       <div style={{maxWidth:820,margin:"0 auto",paddingBottom:40}}>
+        {tab==="identificacao"&&<ModIdentificacao data={data} update={update} setData={setData}/>}
         {tab==="etp"&&<ModETP data={data} update={update}/>}
         {tab==="geral"&&<ModGeral data={data} update={update}/>}
         {tab==="eng"&&<ModEngenharia data={data} update={update}/>}
@@ -1150,37 +1223,56 @@ const ProcessoForm=({obra,onSave,onBack,onDelete,saving})=>{
 // ─── PAINEL ───────────────────────────────────────────────────────────────────
 const Painel=({obras,onCreate,onSelect})=>{
   const stats=useMemo(()=>({total:obras.length,emExec:obras.filter(o=>o.status==="Em Execução").length,concluidas:obras.filter(o=>o.status==="Concluída").length,investimento:obras.reduce((a,o)=>a+Number(o.contrato?.valor_inicial||o.orcamento_estimado||o.etp?.estimativa_valor||0),0)}),[obras]);
-  return(<div style={{padding:"28px 28px 40px",maxWidth:1000,margin:"0 auto"}}>
-    <div style={{marginBottom:24}}><h1 style={{margin:0,fontSize:22,fontWeight:500,color:"#0f172a"}}>Painel de Processos</h1><p style={{margin:"4px 0 0",fontSize:13,color:"#64748b"}}>Gerencie estudos, licitações e execução — Lei 14.133/2021</p></div>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:12,marginBottom:24}}>
-      <MCard label="Total de obras" value={stats.total} accent="#378ADD"/>
-      <MCard label="Em execução" value={stats.emExec} accent="#EF9F27"/>
-      <MCard label="Concluídas" value={stats.concluidas} accent="#1D9E75"/>
-      <MCard label="Investimento total" value={fmtBRL(stats.investimento)} accent="#7F77DD"/>
-    </div>
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}><p style={{margin:0,fontSize:14,fontWeight:500,color:"#0f172a"}}>Obras e Projetos</p><Btn onClick={onCreate}>+ Nova Obra</Btn></div>
-    <Card style={{padding:0,overflow:"hidden"}}>
-      <div style={{overflowX:"auto"}}>
-        <table style={{width:"100%",borderCollapse:"collapse"}}>
-          <thead><tr style={{background:"#f8fafc"}}>{["Objeto / Nome","Status","Orçamento / Contrato","Atualização",""].map(h=><th key={h} style={{padding:"10px 16px",textAlign:"left",fontSize:11,fontWeight:500,color:"#64748b",whiteSpace:"nowrap"}}>{h}</th>)}</tr></thead>
-          <tbody>
-            {obras.map(o=>(<tr key={o.id} style={{borderTop:"1px solid #e2e8f0"}}>
-              <td style={{padding:"12px 16px"}}><p style={{margin:0,fontSize:13,fontWeight:500,color:"#0f172a"}}>{o.nome||"Sem nome"}</p><p style={{margin:0,fontSize:11,color:"#64748b",maxWidth:260,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{o.objeto_resumido}</p></td>
-              <td style={{padding:"12px 16px",whiteSpace:"nowrap"}}><SBadge status={o.status}/></td>
-              <td style={{padding:"12px 16px",fontSize:13,color:"#0f172a",whiteSpace:"nowrap"}}>{fmtBRL(o.contrato?.valor_inicial||o.orcamento_estimado||o.etp?.estimativa_valor)}</td>
-              <td style={{padding:"12px 16px",fontSize:12,color:"#64748b",whiteSpace:"nowrap"}}>{o.updatedAt?.seconds?new Date(o.updatedAt.seconds*1000).toLocaleDateString('pt-BR'):o.updatedAt?new Date(o.updatedAt).toLocaleDateString('pt-BR'):'—'}</td>
-              <td style={{padding:"12px 16px",textAlign:"right"}}><button onClick={()=>onSelect(o)} style={{fontSize:12,padding:"5px 14px",borderRadius:8,background:"#e6f1fb",color:"#185FA5",border:"none",cursor:"pointer",fontWeight:500}}>Abrir processo</button></td>
-            </tr>))}
-            {obras.length===0&&<tr><td colSpan={5} style={{padding:"48px 16px",textAlign:"center",fontSize:13,color:"#64748b"}}>Nenhuma obra cadastrada. Clique em "+ Nova Obra" para começar.</td></tr>}
-          </tbody>
-        </table>
+  return(<div style={{padding:"0 0 40px"}}>
+    {/* Hero banner */}
+    <div style={{background:"linear-gradient(135deg,#0a2010 0%,#0f3320 50%,#1a5c3a 100%)",padding:"32px 28px 36px",marginBottom:0,position:"relative",overflow:"hidden"}}>
+      <div style={{position:"absolute",top:-40,right:-40,width:200,height:200,borderRadius:"50%",background:"rgba(201,168,76,.07)",pointerEvents:"none"}}/>
+      <div style={{position:"absolute",bottom:-30,right:80,width:120,height:120,borderRadius:"50%",background:"rgba(201,168,76,.05)",pointerEvents:"none"}}/>
+      <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:16}}>
+        <LogoTG size={52}/>
+        <div>
+          <h1 style={{margin:0,fontSize:24,fontWeight:800,color:"white",letterSpacing:"-0.5px"}}>Go<span style={{color:"#c9a84c"}}>Works</span> Manager</h1>
+          <p style={{margin:"2px 0 0",fontSize:12,color:"rgba(255,255,255,.5)"}}>TechnoGov Soluções • Gestão Inteligente de Obras Públicas</p>
+        </div>
       </div>
-    </Card>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:12}}>
+        {[{l:"Total de obras",v:stats.total,ic:"🏗"},{l:"Em execução",v:stats.emExec,ic:"⚙️"},{l:"Concluídas",v:stats.concluidas,ic:"✅"},{l:"Investimento total",v:fmtBRL(stats.investimento),ic:"💰"}].map(m=>(
+          <div key={m.l} style={{background:"rgba(255,255,255,.07)",border:"1px solid rgba(201,168,76,.2)",borderRadius:10,padding:"12px 16px",backdropFilter:"blur(4px)"}}>
+            <p style={{fontSize:11,color:"rgba(255,255,255,.5)",margin:"0 0 4px"}}>{m.ic} {m.l}</p>
+            <p style={{fontSize:20,fontWeight:700,margin:0,color:"white"}}>{m.v}</p>
+          </div>))}
+      </div>
+    </div>
+    <div style={{padding:"24px 28px"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+        <p style={{margin:0,fontSize:15,fontWeight:600,color:"#0f172a"}}>Obras e Projetos</p>
+        <button onClick={onCreate} style={{padding:"8px 18px",borderRadius:8,background:"linear-gradient(135deg,#1a6b3c,#2a9d5c)",color:"white",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,boxShadow:"0 4px 12px rgba(26,107,60,.25)"}}>+ Nova Obra</button>
+      </div>
+      <Card style={{padding:0,overflow:"hidden"}}>
+        <div style={{overflowX:"auto"}}>
+          <table style={{width:"100%",borderCollapse:"collapse"}}>
+            <thead><tr style={{background:"#f8fafc"}}>{["Objeto / Nome","Status","Orçamento / Contrato","Atualização",""].map(h=><th key={h} style={{padding:"10px 16px",textAlign:"left",fontSize:11,fontWeight:500,color:"#64748b",whiteSpace:"nowrap"}}>{h}</th>)}</tr></thead>
+            <tbody>
+              {obras.map(o=>(<tr key={o.id} style={{borderTop:"1px solid #e2e8f0"}}>
+                <td style={{padding:"12px 16px"}}><p style={{margin:0,fontSize:13,fontWeight:500,color:"#0f172a"}}>{o.nome||"Sem nome"}</p><p style={{margin:0,fontSize:11,color:"#64748b",maxWidth:260,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{o.objeto_resumido}</p></td>
+                <td style={{padding:"12px 16px",whiteSpace:"nowrap"}}><SBadge status={o.status}/></td>
+                <td style={{padding:"12px 16px",fontSize:13,color:"#0f172a",whiteSpace:"nowrap"}}>{fmtBRL(o.contrato?.valor_inicial||o.orcamento_estimado||o.etp?.estimativa_valor)}</td>
+                <td style={{padding:"12px 16px",fontSize:12,color:"#64748b",whiteSpace:"nowrap"}}>{o.updatedAt?.seconds?new Date(o.updatedAt.seconds*1000).toLocaleDateString('pt-BR'):o.updatedAt?new Date(o.updatedAt).toLocaleDateString('pt-BR'):'—'}</td>
+                <td style={{padding:"12px 16px",textAlign:"right"}}><button onClick={()=>onSelect(o)} style={{fontSize:12,padding:"5px 14px",borderRadius:8,background:"#e6f1fb",color:"#185FA5",border:"none",cursor:"pointer",fontWeight:500}}>Abrir processo</button></td>
+              </tr>))}
+              {obras.length===0&&<tr><td colSpan={5} style={{padding:"48px 16px",textAlign:"center",fontSize:13,color:"#64748b"}}>Nenhuma obra cadastrada. Clique em "+ Nova Obra" para começar.</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
   </div>);
 };
 
 // ─── NAV ──────────────────────────────────────────────────────────────────────
-const NAV=[{id:"list",label:"Painel",icon:"▦"},{id:"boletins",label:"Boletins de Preços",icon:"📋"},{id:"orcamento",label:"Orçamento",icon:"📊"}];
+const NAV=[{id:"list",label:"Painel",icon:"▦"},{id:"boletins",label:"Boletins de Preços",icon:"📋"},{id:"orcamento",label:"Orçamento & Cronograma",icon:"📊"}];
+const BRAND_GREEN="#1a6b3c";
+const BRAND_GOLD="#c9a84c";
 
 // ─── APP ROOT ─────────────────────────────────────────────────────────────────
 export default function App() {
@@ -1251,28 +1343,31 @@ export default function App() {
 
       <div className="gw-ly" style={{display:"flex",flex:1,overflow:"hidden"}}>
         {/* Sidebar desktop */}
-        <aside className="gw-sb" style={{display:"none",width:224,background:"#0f172a",flexDirection:"column",flexShrink:0}}>
-          <div style={{padding:"20px 18px 16px",borderBottom:"1px solid rgba(255,255,255,.08)"}}>
-            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
-              <div style={{width:28,height:28,background:"#185FA5",borderRadius:6,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:"white",fontWeight:700}}>G</div>
-              <span style={{fontWeight:500,fontSize:15,color:"white"}}>GovWorks</span>
+        <aside className="gw-sb" style={{display:"none",width:232,background:"linear-gradient(180deg,#0a2010 0%,#0f3320 60%,#0a2010 100%)",flexDirection:"column",flexShrink:0,borderRight:"1px solid rgba(201,168,76,.15)"}}>
+          <div style={{padding:"20px 18px 16px",borderBottom:"1px solid rgba(201,168,76,.15)"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
+              <LogoTG size={36}/>
+              <div>
+                <p style={{margin:0,fontSize:14,fontWeight:800,color:"white",letterSpacing:"-0.3px"}}>Go<span style={{color:BRAND_GOLD}}>Works</span></p>
+                <p style={{margin:0,fontSize:9,color:"rgba(255,255,255,.4)",letterSpacing:"0.5px"}}>MANAGER</p>
+              </div>
             </div>
-            <p style={{fontSize:11,color:"rgba(255,255,255,.35)",margin:0}}>Gestão de Obras Públicas</p>
+            <p style={{fontSize:10,color:"rgba(255,255,255,.3)",margin:0}}>TechnoGov Soluções</p>
           </div>
           <nav style={{flex:1,padding:"12px 10px"}}>
             {NAV.map(n=>(
-              <button key={n.id} onClick={()=>handleNav(n.id)} style={{width:"100%",textAlign:"left",padding:"8px 12px",borderRadius:6,background:view===n.id?"rgba(255,255,255,.08)":"none",border:"none",cursor:"pointer",fontSize:13,color:view===n.id?"white":"rgba(255,255,255,.55)",marginBottom:4,display:"flex",alignItems:"center",gap:8}}>
+              <button key={n.id} onClick={()=>handleNav(n.id)} style={{width:"100%",textAlign:"left",padding:"9px 12px",borderRadius:8,background:view===n.id?`rgba(201,168,76,.15)`:"none",border:view===n.id?`1px solid rgba(201,168,76,.25)`:"1px solid transparent",cursor:"pointer",fontSize:13,color:view===n.id?BRAND_GOLD:"rgba(255,255,255,.55)",marginBottom:4,display:"flex",alignItems:"center",gap:8,transition:"all .2s"}}>
                 <span>{n.icon}</span>{n.label}
               </button>))}
-            {view==="form"&&<button style={{width:"100%",textAlign:"left",padding:"8px 12px",borderRadius:6,background:"rgba(255,255,255,.06)",border:"none",cursor:"pointer",fontSize:12,color:"rgba(255,255,255,.4)",marginTop:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>📄 {selected?.nome||"Nova obra"}</button>}
+            {view==="form"&&<button style={{width:"100%",textAlign:"left",padding:"9px 12px",borderRadius:8,background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",cursor:"pointer",fontSize:12,color:"rgba(255,255,255,.4)",marginTop:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>📄 {selected?.nome||"Nova obra"}</button>}
           </nav>
-          <div style={{padding:"12px 18px",borderTop:"1px solid rgba(255,255,255,.08)"}}>
-            <p style={{fontSize:11,color:"rgba(255,255,255,.4)",margin:"0 0 6px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>👤 {user.email}</p>
-            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:6}}>
-              <div style={{width:6,height:6,borderRadius:"50%",background:"#1D9E75"}}/>
-              <span style={{fontSize:11,color:"rgba(255,255,255,.4)"}}>Firebase conectado</span>
+          <div style={{padding:"12px 18px 16px",borderTop:"1px solid rgba(201,168,76,.15)"}}>
+            <p style={{fontSize:11,color:"rgba(255,255,255,.35)",margin:"0 0 6px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>👤 {user.email}</p>
+            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
+              <div style={{width:6,height:6,borderRadius:"50%",background:"#2a9d5c"}}/>
+              <span style={{fontSize:10,color:"rgba(255,255,255,.35)"}}>Firebase conectado</span>
             </div>
-            <button onClick={()=>signOut(auth)} style={{background:"none",border:"1px solid rgba(255,255,255,.15)",borderRadius:6,cursor:"pointer",fontSize:11,color:"rgba(255,255,255,.4)",padding:"4px 10px",width:"100%"}}>⎋ Sair</button>
+            <button onClick={()=>signOut(auth)} style={{background:"none",border:`1px solid rgba(201,168,76,.2)`,borderRadius:6,cursor:"pointer",fontSize:11,color:BRAND_GOLD,padding:"5px 10px",width:"100%"}}>⎋ Sair da conta</button>
           </div>
         </aside>
 
