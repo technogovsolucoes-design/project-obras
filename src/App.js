@@ -429,7 +429,7 @@ const ModBoletins = ({ itens, setItens }) => {
           <input value={busca} onChange={e=>setBusca(e.target.value)} placeholder="🔍 Buscar por código ou descrição..." style={{flex:1,minWidth:200,...IS,fontSize:13}}/>
           <select value={estado} onChange={e=>setEstado(e.target.value)} style={{...IS,width:"auto",fontSize:13}}>{ESTADOS.map(s=><option key={s}>{s}</option>)}</select>
           <select value={fonte} onChange={e=>setFonte(e.target.value)} style={{...IS,width:"auto",fontSize:13}}>{["SINAPI","SICRO","CDHU","SBC","Composições Próprias","Planilha importada"].map(f=><option key={f}>{f}</option>)}</select>
-          <Btn variant="danger" size="sm" onClick={()=>{if(window.confirm("Limpar todos os itens da base?"))setItens(SINAPI_DEMO);}}>🗑 Limpar base</Btn>
+          <Btn variant="danger" size="sm" onClick={()=>{if(window.confirm("Limpar todos os itens da base? Esta ação não pode ser desfeita."))setItens([]);}}>🗑 Limpar base</Btn>
           <span style={{fontSize:12,color:"#64748b"}}>{filtered.length} itens</span>
         </div>
         <Card style={{padding:0,overflow:"hidden"}}>
@@ -714,6 +714,11 @@ const ModOrcamento = ({obras,boletimItens,user}) => {
             {["Todas","SINAPI","CDHU","SICRO","SBC","Planilha importada"].map(f=><option key={f}>{f}</option>)}
           </select>
           <Btn variant="danger" size="sm" onClick={()=>{if(window.confirm("Limpar todos os itens selecionados?"))setItensSel([]);}}>🗑 Limpar seleção</Btn>
+          <Btn variant="secondary" size="sm" onClick={()=>{
+            const naoSelecionados=filtrados.filter(i=>!isSel(i.codigo));
+            const novos=naoSelecionados.map(item=>({...item,quantidade:1,etapa:etapasObra[0]||"Geral",mes:MESES_REF[0],itemObra:itensCad[0]||""}));
+            setItensSel(prev=>[...prev,...novos]);
+          }}>☑ Selecionar tudo</Btn>
           <span style={{fontSize:12,color:"#64748b"}}>{filtrados.length} itens disponíveis</span>
         </div>
 
